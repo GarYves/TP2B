@@ -17,3 +17,7 @@ x_transformed = parameters_transform(mu, kappa, theta, sigma, rho, eta);
 
 % Generating the random variables
 simul = simulate_random_variables(num_part, num_days, 666);
+
+
+% Simulation of returns
+[ret, V, RV] = simulate_Heston93(mu, kappa, theta, sigma, rho, v, num_days, 999);

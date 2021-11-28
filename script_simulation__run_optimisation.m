@@ -6,11 +6,9 @@ clear all
 clc
 close all
 
-% load params and simul structure
-script_simluation__load_params
 
-% Simulation of returns
-[ret, V, RV] = simulate_Heston93(mu, kappa, theta, sigma, rho, v, num_days, 999);
+% load params, simul structure and simulated returns
+script_simulation__load_params
 
 
 % Filter using the true parameters
@@ -32,4 +30,4 @@ Opt_ret = fminsearch(@(x) Heston93(x, simul, ret), x_transformed, options_ret);
 
 
 % save optimization data
-save("simulation_optimization_results_.mat", '-regexp', '^(?!(simul)$).')
+save("simulation_optimization_results.mat", '-regexp', '^(?!(simul)$).')
