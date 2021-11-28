@@ -41,7 +41,6 @@ ylim(y_lims)
 
 
 % mettre un tableau qui presente les statistiques de l'erreur
-% N, min, 25%, 50%, 75%, max, mean, stdev, skew, kurt
 errors = [eps_ret_est, eps_ret_true, eps_RV_est, eps_RV_true];
 
 results = table();

@@ -145,6 +145,8 @@ xlabel('\rho')
 legend('Log-Likelihood','True parameter','Optimized parameter')
 title('Parameter \rho')
 
+clear idx ret_mu2 ret_kappa2 ret_theta2 ret_sigma2 ret_rho2
+
 
 %% Graph shape of the log-likelihood function for returns and RV
 figure
@@ -202,3 +204,5 @@ ylabel('Log-Likelihood')
 xlabel('\rho')
 legend('Log-Likelihood','True parameter','Optimized parameter')
 title('Parameter \rho')
+
+clear idx rv_mu2 rv_kappa2 rv_theta2 rv_sigma2 rv_rho2

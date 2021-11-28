@@ -6,7 +6,8 @@ save_results = true;
 
 % returns only
 
-x_opt_ret = parameters_inverse_transform(Opt_ret);
+[ret_mu, ret_kappa, ret_theta, ret_sigma, ret_rho] = parameters_inverse_transform(Opt_ret);
+x_opt_ret = [ret_mu, ret_kappa, ret_theta, ret_sigma, ret_rho];
 
 ret_mu = [linspace(0.06-0.2,0.06+0.2,50),0.06, x_opt_ret(1)];
 ret_kappa = [linspace(5-3,5+3,50),5, x_opt_ret(2)];
@@ -24,30 +25,31 @@ L_ret_rho = zeros(length(ret_rho),1);
 parfor i=1:length(ret_mu)
     x1 = x_opt_ret;
     x1(1) = ret_mu(i);
-    L_ret_mu(i,1) = Heston93_nat(x1, simul, ret,1);
+    L_ret_mu(i,1) = Heston93_nat(x1, simul, ret, 1);
     
     x1 = x_opt_ret;
     x1(2) = ret_kappa(i);
-    L_ret_kappa(i,1) = Heston93_nat(x1, simul, ret,1);
+    L_ret_kappa(i,1) = Heston93_nat(x1, simul, ret, 1);
     
     x1 = x_opt_ret;
     x1(3) = ret_theta(i);
-    L_ret_theta(i,1) = Heston93_nat(x1, simul, ret,1);
+    L_ret_theta(i,1) = Heston93_nat(x1, simul, ret, 1);
     
     x1 = x_opt_ret;
     x1(4) = ret_sigma(i);
-    L_ret_sigma(i,1) = Heston93_nat(x1, simul, ret,1);
+    L_ret_sigma(i,1) = Heston93_nat(x1, simul, ret, 1);
     
     x1 = x_opt_ret;
     x1(5) = ret_rho(i);
-    L_ret_rho(i,1) = Heston93_nat(x1, simul, ret,1);
+    L_ret_rho(i,1) = Heston93_nat(x1, simul, ret, 1);
     i
 end
-
+clear x1 i
 
 % returns + RV
 
-x_opt_rv = parameters_inverse_transform(Opt_rv);
+[rv_mu, rv_kappa, rv_theta, rv_sigma, rv_rho, rv_eta] = parameters_inverse_transform(Opt_rv);
+x_opt_rv = [rv_mu, rv_kappa, rv_theta, rv_sigma, rv_rho, rv_eta];
 
 rv_mu = [linspace(0.06-0.2,0.06+0.2,50),0.06, x_opt_rv(1)];
 rv_kappa = [linspace(5-3,5+3,50),5, x_opt_rv(2)];
@@ -83,9 +85,10 @@ parfor i=1:length(rv_mu)
     L_rv_rho(i,1) = Heston93_nat(x1, simul, [ret, RV], 1);
     i
 end
-
+clear x1 i
 
 % save likelihood functions
 if save_results==true
+    clear save_results
     save("simulation_optimization_results_and_likelihood_functions.mat", '-regexp', '^(?!(simul)$).')
 end
