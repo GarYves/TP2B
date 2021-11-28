@@ -46,7 +46,6 @@ errors = [eps_ret_est, eps_ret_true, eps_RV_est, eps_RV_true];
 
 results = table();
 
-results.N = 
 results.min = min(errors)';
 results.q25 = quantile(errors, 0.25)';
 results.q50 = quantile(errors, 0.50)';
