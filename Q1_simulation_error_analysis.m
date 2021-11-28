@@ -42,3 +42,22 @@ ylim(y_lims)
 
 % mettre un tableau qui presente les statistiques de l'erreur
 % N, min, 25%, 50%, 75%, max, mean, stdev, skew, kurt
+errors = [eps_ret_est, eps_ret_true, eps_RV_est, eps_RV_true];
+
+results = table();
+
+results.N = 
+results.min = min(errors)';
+results.q25 = quantile(errors, 0.25)';
+results.q50 = quantile(errors, 0.50)';
+results.q75 = quantile(errors, 0.75)';
+results.max = max(errors)';
+
+results.mean = mean(errors)';
+results.std = std(errors)';
+results.skew = skewness(errors)';
+results.kurt = kurtosis(errors)';
+
+results.Properties.RowNames = {'ret est', 'ret true', 'ret+rv est', 'ret+rv true'};
+
+results
