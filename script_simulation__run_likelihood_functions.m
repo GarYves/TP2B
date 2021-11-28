@@ -21,7 +21,6 @@ L_ret_theta = zeros(length(ret_theta),1);
 L_ret_sigma = zeros(length(ret_sigma),1);
 L_ret_rho = zeros(length(ret_rho),1);
 
-
 parfor i=1:length(ret_mu)
     x1 = x_opt_ret;
     x1(1) = ret_mu(i);
