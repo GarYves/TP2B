@@ -17,10 +17,12 @@ script_simulation__load_params
 
 
 % Parameter search using fminsearch for stability
-options_rv = optimset('Display', 'iter', 'PlotFcns', @optimplotfval, 'TolFun', 1e-3, 'TolX', 1e-3);
+options_rv = optimset('Display', 'iter', 'PlotFcns', @optimplotfval,...
+    'TolFun', 1e-3, 'TolX', 1e-4, 'UseParallel', true);
 Opt_rv = fminsearch(@(x) Heston93(x, simul, [ret, RV]), x_transformed, options_rv);
 
-options_ret = optimset('Display', 'iter', 'PlotFcns', @optimplotfval, 'TolFun', 1e-3, 'TolX', 1e-3);
+options_ret = optimset('Display', 'iter', 'PlotFcns', @optimplotfval,...
+    'TolFun', 1e-3, 'TolX', 1e-4, 'UseParallel', true);
 Opt_ret = fminsearch(@(x) Heston93(x, simul, ret), x_transformed, options_ret);
 
 
