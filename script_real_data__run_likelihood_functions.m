@@ -21,25 +21,17 @@ parfor i=1:length(ret_mu)
     L_ret_mu(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
     
     x1 = x_ret_spx_est(1:5);
-    x1(3) = ret_theta(i);
-    L_ret_theta(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
-
-    i
-end
-
-parfor i=1:length(ret_mu)
-    x1 = x_ret_spx_est(1:5);
     x1(2) = ret_kappa(i);
     L_ret_kappa(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
 
     x1 = x_ret_spx_est(1:5);
+    x1(3) = ret_theta(i);
+    L_ret_theta(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
+
+    x1 = x_ret_spx_est(1:5);
     x1(4) = ret_sigma(i);
     L_ret_sigma(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
-    
-    i
-end
 
-parfor i=1:length(ret_mu)
     x1 = x_ret_spx_est(1:5);
     x1(5) = ret_rho(i);
     L_ret_rho(i,1) = Heston93_nat(x1, simul_real, spx_ret, 1);
@@ -49,13 +41,14 @@ end
 
 clear x1 i n_steps
 
+
 % returns + RV
 
 n_steps = 40;
 RV_mu = [linspace(-0.05, 0.20, n_steps), mu_RV_est];
 RV_kappa = [linspace(5, 15, n_steps), kappa_RV_est];
 RV_theta = [linspace(0.05^2, 0.15^2, n_steps), theta_RV_est];
-RV_sigma = [linspace(0.3, 0.8, n_steps), sigma_RV_est];
+RV_sigma = [linspace(0.1, 0.6, n_steps), sigma_RV_est];
 RV_rho = [linspace(-0.8, -0.1, n_steps), rho_RV_est];
 
 L_RV_mu = zeros(length(RV_mu),1);
@@ -84,8 +77,10 @@ parfor i=1:length(RV_mu)
     x1 = x_RV_spx_est;
     x1(5) = RV_rho(i);
     L_RV_rho(i,1) = Heston93_nat(x1, simul_real, [spx_ret, spx_RV], 1);
+    
     i
 end
+
 clear x1 i n_steps
 
 % save likelihood functions

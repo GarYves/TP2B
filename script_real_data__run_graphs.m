@@ -99,11 +99,11 @@ hold off
 
 %% Graph shape of the log-likelihood function for returns only
 figure
- 
 
-ymin = min([L_ret_mu; L_ret_kappa; L_ret_theta; L_ret_sigma; L_ret_rho]);
-ymax = max([L_ret_mu; L_ret_kappa; L_ret_theta; L_ret_sigma; L_ret_rho]);
-ylim_ = [ymin, ymax];
+ylim_ = [
+    min([L_ret_mu; L_ret_kappa; L_ret_theta; L_ret_sigma; L_ret_rho]),...
+    max([L_ret_mu; L_ret_kappa; L_ret_theta; L_ret_sigma; L_ret_rho])
+];
 
 subplot(3,2,1)
 [ret_mu2,idx]=sort(ret_mu);
@@ -160,4 +160,70 @@ title('Parameter \rho')
 ylim(ylim_)
 
 clear idx ret_mu2 ret_kappa2 ret_theta2 ret_sigma2 ret_rho2 ylim_
+
+
+%% Graph shape of the log-likelihood function for returns + RV
+figure
+
+ylim_ = [
+    min([L_RV_mu; L_RV_kappa; L_RV_theta; L_RV_sigma; L_RV_rho]),...
+    max([L_RV_mu; L_RV_kappa; L_RV_theta; L_RV_sigma; L_RV_rho])
+];
+
+subplot(3,2,1)
+[RV_mu2,idx]=sort(RV_mu);
+plot(RV_mu2,L_RV_mu(idx),'k')
+hold on
+plot(RV_mu(end),L_RV_mu(end),'b*')
+ylabel('Log-Likelihood')
+xlabel('\mu')
+legend('Log-Likelihood','Optimized parameter')
+title('Parameter \mu')
+ylim(ylim_)
+
+subplot(3,2,2)
+[RV_kappa2,idx]=sort(RV_kappa);
+plot(RV_kappa2,L_RV_kappa(idx),'k')
+hold on
+plot(RV_kappa(end),L_RV_kappa(end),'b*')
+ylabel('Log-Likelihood')
+xlabel('\kappa')
+legend('Log-Likelihood','Optimized parameter')
+title('Parameter \kappa')
+ylim(ylim_)
+
+subplot(3,2,3)
+[RV_theta2,idx]=sort(RV_theta);
+plot(RV_theta2,L_RV_theta(idx),'k')
+hold on
+plot(RV_theta(end),L_RV_theta(end),'b*')
+ylabel('Log-Likelihood')
+xlabel('\theta')
+legend('Log-Likelihood','Optimized parameter')
+title('Parameter \theta')
+ylim(ylim_)
+
+subplot(3,2,4)
+[RV_sigma2,idx]=sort(RV_sigma);
+plot(RV_sigma2,L_RV_sigma(idx),'k')
+hold on
+plot(RV_sigma(end),L_RV_sigma(end),'b*')
+ylabel('Log-Likelihood')
+legend('Log-Likelihood','Optimized parameter')
+title('Parameter \sigma')
+ylim(ylim_)
+
+subplot(3,2,5)
+[RV_rho2,idx]=sort(RV_rho);
+plot(RV_rho2,L_RV_rho(idx),'k')
+hold on
+plot(RV_rho(end),L_RV_rho(end),'b*')
+ylabel('Log-Likelihood')
+xlabel('\rho')
+legend('Log-Likelihood','Optimized parameter')
+title('Parameter \rho')
+ylim(ylim_)
+
+clear idx RV_mu2 RV_kappa2 RV_theta2 RV_sigma2 RV_rho2 ylim_
+
 
