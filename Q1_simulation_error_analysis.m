@@ -1,3 +1,11 @@
+
+% load everything
+script_simulation__load_params
+load('simulation_optimization_results_and_likelihood_functions.mat')
+scrip_simulation__run_graphs
+
+
+% histograms of errors
 V_true = V(1:(end-1));
 
 eps_ret_est = V_ret_est(:, 1) - V_true;
