@@ -1,5 +1,5 @@
 script_real_data__load_params
-load("real_data_optimization_results_test.mat")
+load("real_data_optimization_results_and_likelihood_functions.mat")
 
 script_real_data__run_graphs
 
