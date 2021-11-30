@@ -2,7 +2,7 @@
 % load everything
 script_simulation__load_params
 load('simulation_optimization_results_and_likelihood_functions.mat')
-scrip_simulation__run_graphs
+script_simulation__run_graphs
 
 
 % histograms of errors
