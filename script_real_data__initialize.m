@@ -1,0 +1,4 @@
+% for a first run ever or to reinitialize everything
+script_real_data__load_params
+script_real_data__run_optimisation
+script_real_data__run_likelihood_functions
