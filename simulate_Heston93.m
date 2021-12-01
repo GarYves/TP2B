@@ -29,8 +29,9 @@ function [ret, V, IV] = simulate_Heston93(mu, kappa, theta, sigma, rho, v_start,
         % set seed for repeatable simulations
         rng(seed);
 
-        % time step, I use one trading day
+        % time steps, one trading day and 5 intraday steps per day
         delta = 1/252;
+        intraday_steps = 5;
 
         % the d and eta are paramters used for simulating non-central chisquare 
         % distributions
@@ -42,27 +43,27 @@ function [ret, V, IV] = simulate_Heston93(mu, kappa, theta, sigma, rho, v_start,
         V = zeros(num_days,1);
         ret = zeros(num_days,1);
         IV = zeros(num_days,1);
-        v = zeros(5,1);
+        v = zeros(intraday_steps,1);
         
         vol_past = v_start;
         for t = 1:num_days
-            v(1,1) = max(intraday_integrated_variance_increment(vol_past), 0.000001);
-            for d = 2:5
-                v(d,1) = max(intraday_integrated_variance_increment(v(d-1)), 0.000001);
+            v(1,1) = max(intraday_integrated_variance_increment(vol_past, intraday_steps), 0.000001);
+            for d = 2:intraday_steps
+                v(d,1) = max(intraday_integrated_variance_increment(v(d-1), intraday_steps), 0.000001);
             end
 
             vol = [vol_past; v];
-            V(t) = v(5,1);
-            IV(t) = sum((vol(1:end-1)+vol(2:end))/2)*delta/5;
+            V(t) = v(end, 1);
+            IV(t) = sum((vol(1:end-1)+vol(2:end))/2)*delta/intraday_steps;
             ret(t) = mu*delta - IV(t)/2 ...
                 + rho/sigma * (V(t) - vol_past - kappa*theta*delta + kappa*IV(t))...
                 + sqrt((1-rho.^2)*IV(t))*normrnd(0, 1);
-            IV(t) = IV(t) + normrnd(0,0.1.*IV(t));
+            IV(t) = IV(t) + normrnd(0, 0.1.*IV(t)); % WHAT?
             vol_past = V(t);
         end
     end
 
-    function [v_incr] = intraday_integrated_variance_increment(v_prev)
-           v_incr = v_prev + kappa*(theta-v_prev)*delta/5 + sigma.*sqrt(v_prev*delta/5)*normrnd(0,1);
+    function [v_incr] = intraday_integrated_variance_increment(v_prev, n_steps)
+           v_incr = v_prev + kappa*(theta-v_prev)*delta/n_steps + sigma.*sqrt(v_prev*delta/n_steps)*normrnd(0,1);
     end
 end

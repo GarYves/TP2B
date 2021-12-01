@@ -29,7 +29,9 @@ precision
 
 rve = (V_ret_spx_est(:,1)/252 - spx_RV)./(spx_RV);
 
-figure; histogram(rve)
+figure
+histogram(rve)
+title('Histogram of the Relative Error of Variance: (V - RV) / RV')
 
 figure; qqplot(rve)
 

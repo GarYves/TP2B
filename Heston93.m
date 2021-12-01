@@ -28,25 +28,21 @@ function [Like_H, V] = Heston93(x, simul, Obs, C_I)
     
     % Uniform rv used for propagating the partilces
     U = simul.U;
-    
     ZZ = simul.ZZ;
 
     % Uniform rv used for resampling the particles
     UU = simul.UU;
-        
-    % Inverse Gaussian rv used for sampling the Integrated variance
-    %U_IV = simul.U_IV;
     
     % Transform the parameters to their original values
     [mu, kappa, theta, sigma, rho, eta_p] = parameters_inverse_transform(x);
 
     % If the realized variance is given
     Y  = Obs(:,1);
-    if size_obs==2
+    if size_obs == 2
         RV = Obs(:,2);
     end
     
-    if nargin==3
+    if nargin == 3
         C_I=0;
     end
 
@@ -56,8 +52,7 @@ function [Like_H, V] = Heston93(x, simul, Obs, C_I)
     % Initial sampling of the volatility component.
     v1 = (U(:,1).*0.02);
     
-    % Use the inverse method to generate Non-central chi-squared rv from
-    % uniform rv
+    % Use the inverse method to generate Non-central chi-squared rv from uniform rv
 
     % Pre-allocate the vector of filtered variance
     if C_I==0
@@ -69,9 +64,8 @@ function [Like_H, V] = Heston93(x, simul, Obs, C_I)
     % Pre-allocate the vector for the log-likelihood
     Like_H = zeros(N,1);
 
-
     % Select the probability density function based on the observation set.
-    if size_obs==1
+    if size_obs == 1
         pdf = @(Y, IV_s, v1, v2) normpdf(Y,...
                       mu.*delta - 0.5.*IV_s + rho./sigma.*(v2-v1-kappa.*theta.*delta + kappa.*IV_s),...
                       sqrt((1-rho.^2).*IV_s));
@@ -81,41 +75,38 @@ function [Like_H, V] = Heston93(x, simul, Obs, C_I)
                       sqrt((1-rho.^2).*IV_s))...
                       .*normpdf((IV_s - RV)./RV, 0, eta_p);   
     end
-
-
+    
+    % Method proposed in Glasserman to sample quickly non-central chi-squared rv.
+    % Simulate a one time propagation step v_t to v_t+1 
     for t = 1:N
-        % I use the method proposed in Glasserman to sample quickly
-        % non-central chi-squared rv.
-        % I simulate a one time propagation step v_t to v_t+1 
+        % Simulation of intraday integrated variance 
         IV = 0;
         vol_past = v1;
-        for d=1:5
-            v2 = max(vol_past + kappa.*(theta-vol_past).*delta/5 + sigma.*sqrt(vol_past.*delta/5).*ZZ(:,t,d),0.000001);
-            IV = IV+ (vol_past+v2)/2.*delta./5;
+        for d = 1:5
+            v2 = max(vol_past + kappa.*(theta-vol_past).*delta/5 + sigma.*sqrt(vol_past.*delta/5).*ZZ(:,t,d), 0.000001);
+            IV = IV + (vol_past+v2)/2.*delta./5;
             vol_past = v2;
         end
+
         % The log-likelihood. Its important to note that since the
         % returns and the volatility are correlated we have to take
         % it into account.
-        
-        if size_obs==1
+        if size_obs == 1
             w = pdf(Y(t), IV, v1, v2);
         else
             w = pdf(Y(t), RV(t), IV, v1, v2);
         end
         
-        % I compute the Log-Likelihood            
+        % Compute the Log-Likelihood            
         Like_H(t) = log(mean(w));
 
-        % I compute each particles weight
+        % Compute each particles weight
         pis = w./sum(w);
 
-        % I use the Malik & Pitt 2011 method to smooth the volatility CDF
+        % Malik & Pitt 2011 method to smooth the volatility CDF
         % Concatenate the volatility and their respective weight in an Nx2
         % matrix.
-        
         % Note that I adapted the Malik and Pitt method to run quickly
-
         arr = [v2, pis];
         arr = arr(pis > 10^-7, :);
 
@@ -126,18 +117,17 @@ function [Like_H, V] = Heston93(x, simul, Obs, C_I)
         % Compute the empirical CDF
         arr(:,2) = cumsum(arr(:,2))-arr(:,2)./2;
         
-        % I compute the expected volatility value and confidence interval.
- 
+        % Compute the expected volatility value and confidence interval.
         % Complete the CDF for the smoothing process
         arr_ = [[arr(1, 1)*0.95, 0]; arr; [arr(end, 1)*1.05, 1]];
-        if C_I==1
+        if C_I == 1
             V(t,1) = sum(v2.*pis);
             V(t,2) = interp1(arr_(:,2), arr_(:,1), 0.025);
             V(t,3) = interp1(arr_(:,2), arr_(:,1), 0.975);
         end
+
         % Use linear interpolation to apply Malik & Pitt smoothing
         % method to stabilize the Likelihood
-
         v1 = interp1(arr_(:,2), arr_(:,1), UU(:,t));
         
     end
